@@ -9,10 +9,12 @@ namespace Projeto.Domain.Interfaces
 {
     public interface ICursoRepository
     {
-        public void AdicionarCurso( Curso curso );
-
-        public void AtualizarCurso(Curso curso);
-
+        void Adicionar(Curso curso);
+        void Atualizar(Curso curso);
+        void Deletar(int idCurso);
+        List<Curso> ObterTodos();
+        Curso? ObterPorID(int idCurso);
+        Curso? ObterPorNome(string nome);
 
     }
 }
