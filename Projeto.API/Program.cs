@@ -1,4 +1,5 @@
 using Projeto.Application.Service;
+using Projeto.Application.Services;
 using Projeto.Data.Repositorios;
 using Projeto.Domain.Interfaces;
 
@@ -12,6 +13,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 builder.Services.AddScoped<IAlunoService, AlunoService>();
+builder.Services.AddScoped<ICursoService, CursoService>();
+builder.Services.AddScoped<ICursoRepository, CursoRepository>();
+builder.Services.AddScoped<IMatriculaService, MatriculaService>();
+builder.Services.AddScoped<IMatriculaRepository, MatriculaRepository>();
 
 var app = builder.Build();
 

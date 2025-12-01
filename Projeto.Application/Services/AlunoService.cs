@@ -20,7 +20,7 @@ namespace Projeto.Application.Service
 
         public void Adicionar(Aluno aluno)
         {
-            Aluno buscaAluno = _alunoRepository.ObterPOrcpf(aluno.CPF);
+            Aluno buscaAluno = _alunoRepository.ObterPorcpf(aluno.CPF);
             if(buscaAluno != null)
             {
                 throw new Exception("Já existe um aluno cadastrado com esse CPF");
@@ -41,7 +41,7 @@ namespace Projeto.Application.Service
                 throw new Exception("Aluno não encotratado");
             }
 
-            buscaAluno = _alunoRepository.ObterPOrcpf(aluno.CPF);
+            buscaAluno = _alunoRepository.ObterPorcpf(aluno.CPF);
 
             if (buscaAluno.IDAluno != aluno.IDAluno)
             {
@@ -61,7 +61,7 @@ namespace Projeto.Application.Service
 
         public Aluno ObterPOrcpf(string cpf)
         {
-            return _alunoRepository.ObterPOrcpf(cpf);
+            return _alunoRepository.ObterPorcpf(cpf);
         }
 
         public Aluno ObterPorID(int IDAluno)

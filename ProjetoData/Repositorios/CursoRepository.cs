@@ -3,29 +3,28 @@ using Projeto.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Projeto.Data.Repositorios
 {
-    class CursoRepository : ICursoRepository
+    public class CursoRepository : ICursoRepository
     {
         private readonly List<Curso> _cursos = new();
 
         public void Adicionar(Curso curso)
         {
+            if (curso == null) throw new ArgumentNullException(nameof(curso));
             _cursos.Add(curso);
         }
 
         public void Atualizar(Curso curso)
         {
-            var existente = ObterPorID(curso.IdCurso);
-            if (existente != null)
+            if (curso == null) throw new ArgumentNullException(nameof(curso));
+
+            var index = _cursos.FindIndex(c => c.idCurso == curso.idCurso);
+            if (index >= 0)
             {
-                existente.Nome = curso.Nome;
-                existente.NomeCoordenador = curso.NomeCoordenador;
-                existente.Ativo = curso.Ativo;
+                // Substitui o objeto na lista para evitar depender de setters possivelmente inacessíveis
+                _cursos[index] = curso;
             }
         }
 
@@ -42,6 +41,8 @@ namespace Projeto.Data.Repositorios
             => _cursos.FirstOrDefault(c => c.idCurso == idCurso);
 
         public Curso? ObterPorNome(string nome)
-            => _cursos.FirstOrDefault(c => c.Nome.Equals(nome, StringComparison.OrdinalIgnoreCase));
+            => _cursos.FirstOrDefault(c => 
+                !string.IsNullOrEmpty(c.Nome) && 
+                c.Nome.Equals(nome ?? string.Empty, StringComparison.OrdinalIgnoreCase));
     }
 }
