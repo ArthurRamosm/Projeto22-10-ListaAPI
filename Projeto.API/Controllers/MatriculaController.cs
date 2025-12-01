@@ -6,69 +6,41 @@ using Projeto.Domain;
 
 namespace Projeto.API.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class MatriculaController : ControllerBase
+    [ApiController]
+    public class MatriculaController(IMatriculaService matriculaService) : ControllerBase 
     {
-        private readonly IMatriculaService _matriculaService;
+        private readonly IMatriculaService _matriculaService = matriculaService;
 
-        public MatriculaController(IMatriculaService matriculaService)
+        [HttpPost("{idAluno}/{idCurso}")]
+        public IActionResult Adicionar(int idAluno, int idCurso)
         {
-            _matriculaService = matriculaService;
+            try
+            {
+               
+                _matriculaService.Adicionar(new Domain.Entidades.Matricula(idAluno, idCurso, 0, DateTime.Now, true));
+                return Ok("Matrícula realizada com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult ObterTodos()
         {
-            var todos = _matriculaService.ObterTodos();
-            return Ok(todos);
+            try
+            {
+                var matriculasObtidas = _matriculaService.ObterTodos();
+                return Ok(matriculasObtidas);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
-        {
-            var mat = _matriculaService.ObterTodos().FirstOrDefault(m => m.IdMatricula == id);
-            if (mat == null) return NotFound();
-            return Ok(mat);
-        }
-
-        [HttpPost]
-        public IActionResult Post([FromBody] MatriculaDTO dto)
-        {
-            if (dto == null) return BadRequest();
-
-            // Mapear DTO para entidade Matricula.
-            var matricula = new Matricula(
-                dto.idAluno,
-                dto.idCurso,
-                dto.IdMatricula, // pode ser 0 para nova matrícula
-                dto.DataMatricula ?? DateTime.UtcNow,
-                dto.Ativa
-            );
-
-            _matriculaService.Adicionar(matricula);
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var mat = _matriculaService.ObterTodos().FirstOrDefault(m => m.IdMatricula == id);
-            if (mat == null) return NotFound();
-
-            // A interface fornece Desativar(idAluno, idCurso)
-            _matriculaService.Desativar(mat.idAluno, mat.idCurso);
-            return Ok();
-        }
-    }
-
-    // DTO local simples para aceitar payloads no controller.
-    public class MatriculaDTO
-    {
-        public int idAluno { get; set; }
-        public int idCurso { get; set; }
-        public int IdMatricula { get; set; }
-        public DateTime? DataMatricula { get; set; }
-        public bool Ativa { get; set; } = true;
+        
     }
 }
